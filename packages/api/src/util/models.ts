@@ -9,6 +9,8 @@ export interface GuildSettings {
 	farewellMessage: string | null;
 	greetingMessage: string | null;
 	guildId: string;
+	mainGuildId: string | null;
+	modmailChannelGuildId: string | null;
 	modmailChannelId: string | null;
 	simpleMode: boolean;
 }

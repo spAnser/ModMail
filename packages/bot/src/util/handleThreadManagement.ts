@@ -105,11 +105,16 @@ export async function openThread(
 		'targetUser' in input ? input.targetUser : isMessage ? input.author : input.options.getUser('user', true);
 
 	const settings = await prisma.guildSettings.findFirst({ where: { guildId: guild.id } });
-	if (!settings?.modmailChannelId || !guild.channels.cache.has(settings.modmailChannelId)) {
+	let modmailGuild = guild;
+	if (settings?.modmailChannelGuildId) {
+		modmailGuild = client.guilds.cache.get(settings.modmailChannelGuildId) ?? modmailGuild;
+	}
+
+	if (!settings?.modmailChannelId || !modmailGuild.channels.cache.has(settings.modmailChannelId)) {
 		return send('common.errors.thread_creation');
 	}
 
-	const modmail = guild.channels.cache.get(settings.modmailChannelId) as ForumChannel | TextChannel;
+	const modmail = modmailGuild.channels.cache.get(settings.modmailChannelId) as ForumChannel | TextChannel;
 	const existingThread = await prisma.thread.findFirst({
 		where: {
 			guildId: guild.id,

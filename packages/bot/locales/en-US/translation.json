@@ -267,6 +267,14 @@
 			"name": "config",
 			"description": "Manage your server's configuration",
 			"options": {
+				"modmail_main_server": {
+					"name": "modmail-main-server",
+					"description": "The server that is your members are in"
+				},
+				"modmail_channel_server": {
+					"name": "modmail-channel-server",
+					"description": "The server your modmail channel is in"
+				},
 				"modmail_channel": {
 					"name": "modmail-channel",
 					"description": "The channel your modmail threads should be going to"

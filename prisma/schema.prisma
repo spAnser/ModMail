@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
 }
 
@@ -9,12 +9,14 @@ datasource db {
 }
 
 model GuildSettings {
-  guildId          String  @id
-  modmailChannelId String?
-  greetingMessage  String?
-  farewellMessage  String?
-  simpleMode       Boolean @default(false)
-  alertRoleId      String?
+  guildId               String  @id
+  mainGuildId           String?
+  modmailChannelGuildId String?
+  modmailChannelId      String?
+  greetingMessage       String?
+  farewellMessage       String?
+  simpleMode            Boolean @default(false)
+  alertRoleId           String?
 }
 
 model SnippetUpdates {

@@ -1,7 +1,7 @@
 import type { GuildSettings } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { stripIndents } from 'common-tags';
-import type { PermissionResolvable, TextChannel } from 'discord.js';
+import type { ForumChannel, Guild, PermissionResolvable, TextChannel } from 'discord.js';
 import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
@@ -22,10 +22,19 @@ export default class implements Command<ApplicationCommandType.ChatInput> {
 		dm_permission: false,
 		options: [
 			{
+				...getLocalizedProp('name', 'commands.config.options.modmail_main_server.name'),
+				...getLocalizedProp('description', 'commands.config.options.modmail_main_server.description'),
+				type: ApplicationCommandOptionType.String,
+			},
+			{
+				...getLocalizedProp('name', 'commands.config.options.modmail_channel_server.name'),
+				...getLocalizedProp('description', 'commands.config.options.modmail_channel_server.description'),
+				type: ApplicationCommandOptionType.String,
+			},
+			{
 				...getLocalizedProp('name', 'commands.config.options.modmail_channel.name'),
 				...getLocalizedProp('description', 'commands.config.options.modmail_channel.description'),
-				type: ApplicationCommandOptionType.Channel,
-				channel_types: [ChannelType.GuildText, ChannelType.GuildForum],
+				type: ApplicationCommandOptionType.String,
 			},
 			{
 				...getLocalizedProp('name', 'commands.config.options.greeting.name'),
@@ -64,14 +73,24 @@ export default class implements Command<ApplicationCommandType.ChatInput> {
 				// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			})) ?? ({} as Partial<Omit<GuildSettings, 'guild_id'>>);
 
-		const channel = interaction.options.getChannel('modmail-channel') as TextChannel | null;
+		const mainServerId = interaction.options.getString('modmail-main-server');
+		const mailServerId = interaction.options.getString('modmail-channel-server');
+		const channelId = interaction.options.getString('modmail-channel');
 		const greeting = interaction.options.getString('greeting');
 		const farewell = interaction.options.getString('farewell');
 		const simple = interaction.options.getBoolean('simple-mode');
 		const alertRole = interaction.options.getRole('alert-role');
 
-		if (channel) {
-			settings.modmailChannelId = channel.id;
+		if (mainServerId) {
+			settings.mainGuildId = mainServerId;
+		}
+
+		if (mailServerId) {
+			settings.modmailChannelGuildId = mailServerId;
+		}
+
+		if (channelId) {
+			settings.modmailChannelId = channelId;
 		}
 
 		if (greeting) {
@@ -101,6 +120,8 @@ export default class implements Command<ApplicationCommandType.ChatInput> {
 
 		return interaction.reply({
 			content: stripIndents`
+				• **main server**: ${configured.modmailChannelGuildId ? `<../${configured.modmailChannelGuildId}>` : 'none'}
+				• **modmail channel server**: ${configured.modmailChannelGuildId ? `<../${configured.modmailChannelGuildId}>` : 'none'}
 				• **modmail channel**: ${configured.modmailChannelId ? `<../${configured.modmailChannelId}>` : 'none'}
 				• **greeting message**: ${configured.greetingMessage ? configured.greetingMessage : 'none'}
 				• **farewell message**: ${configured.farewellMessage ? configured.farewellMessage : 'none'}

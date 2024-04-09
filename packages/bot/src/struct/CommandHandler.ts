@@ -278,12 +278,17 @@ export class CommandHandler {
 
 		const anon = interaction.options.getBoolean('anon');
 
-		const member = await interaction.guild.members.fetch(thread.userId).catch(() => null);
+		const settings = await this.prisma.guildSettings.findFirst({ where: { guildId: interaction.guild.id } });
+
+		let modmailGuild = interaction.guild;
+		if (settings?.mainGuildId) {
+			modmailGuild = interaction.client.guilds.cache.get(settings.mainGuildId) ?? interaction.guild;
+		}
+
+		const member = await modmailGuild.members.fetch(thread.userId).catch(() => null);
 		if (!member) {
 			return i18next.t('common.errors.no_member', { lng: interaction.locale });
 		}
-
-		const settings = await this.prisma.guildSettings.findFirst({ where: { guildId: interaction.guild.id } });
 
 		await sendStaffThreadMessage({
 			content: snippet.content,

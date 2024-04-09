@@ -40,7 +40,13 @@ export async function handleStaffThreadMessage(
 
 	const attachment = interaction.options.getAttachment('attachment');
 
-	const member = await interaction.guild.members.fetch(thread.userId).catch(() => null);
+	const settings = await prisma.guildSettings.findFirst({ where: { guildId: interaction.guild.id } });
+	let modmailGuild = interaction.guild;
+	if (settings?.mainGuildId) {
+		modmailGuild = interaction.client.guilds.cache.get(settings.mainGuildId) ?? interaction.guild;
+	}
+
+	const member = await modmailGuild.members.fetch(thread.userId).catch(() => null);
 	if (!member) {
 		return interaction.reply(i18next.t('common.errors.no_member', { lng: interaction.locale }));
 	}
@@ -99,7 +105,6 @@ export async function handleStaffThreadMessage(
 		};
 	}
 
-	const settings = await prisma.guildSettings.findFirst({ where: { guildId: interaction.guild.id } });
 	options.simpleMode = settings?.simpleMode ?? false;
 
 	return sendStaffThreadMessage(options as SendStaffThreadMessageOptions);

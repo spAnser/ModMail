@@ -36,18 +36,22 @@ export default class implements Command<ApplicationCommandType.Message> {
 			return;
 		}
 
-		const member = await interaction.guild.members.fetch(thread.userId).catch(() => null);
-		if (!member) {
-			await interaction.reply(i18next.t('common.errors.no_member', { lng: interaction.locale }));
-			return;
-		}
-
 		if (!interaction.targetMessage.content) {
 			await interaction.reply(i18next.t('common.errors.no_content', { lng: interaction.locale }));
 			return;
 		}
 
 		const settings = await this.prisma.guildSettings.findFirst({ where: { guildId: interaction.guild.id } });
+		let modmailGuild = interaction.guild;
+		if (settings?.mainGuildId) {
+			modmailGuild = interaction.client.guilds.cache.get(settings.mainGuildId) ?? interaction.guild;
+		}
+
+		const member = await modmailGuild.members.fetch(thread.userId).catch(() => null);
+		if (!member) {
+			await interaction.reply(i18next.t('common.errors.no_member', { lng: interaction.locale }));
+			return;
+		}
 
 		await sendStaffThreadMessage({
 			content: interaction.targetMessage.content,

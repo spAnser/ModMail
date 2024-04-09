@@ -9,6 +9,8 @@ import type { GuildSettings } from '../util/models';
 import { snowflakeSchema } from '../util/snowflakeSchema.js';
 
 const schema = s.object({
+	mainGuildId: snowflakeSchema.nullish,
+	modmailChannelGuildId: snowflakeSchema.nullish,
 	modmailChannelId: snowflakeSchema.nullish,
 	greetingMessage: s.string.lengthGreaterThan(0).lengthLessThanOrEqual(1_900).nullish,
 	farewellMessage: s.string.lengthGreaterThan(0).lengthLessThanOrEqual(1_900).nullish,
