@@ -17,6 +17,7 @@ RUN yarn --immutable
 
 COPY prisma ./prisma
 RUN yarn prisma generate
+RUN yarn prisma migrate deploy
 
 COPY packages/api ./packages/api
 COPY packages/bot ./packages/bot
