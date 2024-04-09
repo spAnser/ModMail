@@ -212,7 +212,7 @@ export async function openThread(
 		}
 
 		startMessageOptions = {
-			name: `${member.user.username}-${member.user.discriminator}`,
+			name: member.user.username,
 			message: { embeds: [embed] },
 			appliedTags: tag ? [tag.id] : [],
 		};
@@ -254,7 +254,7 @@ export async function openThread(
 		const startMessage = await modmail.send(startMessageOptions as MessageCreateOptions);
 
 		threadChannel = await startMessage.startThread({
-			name: `${member.user.username}-${member.user.discriminator}`,
+			name: member.user.username,
 		});
 	}
 
