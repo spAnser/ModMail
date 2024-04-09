@@ -120,7 +120,7 @@ export default class implements Command<ApplicationCommandType.ChatInput> {
 
 		return interaction.reply({
 			content: stripIndents`
-				• **main server**: ${configured.modmailChannelGuildId ? `<../${configured.modmailChannelGuildId}>` : 'none'}
+				• **main server**: ${configured.mainGuildId ? `<../${configured.mainGuildId}>` : 'none'}
 				• **modmail channel server**: ${configured.modmailChannelGuildId ? `<../${configured.modmailChannelGuildId}>` : 'none'}
 				• **modmail channel**: ${configured.modmailChannelId ? `<../${configured.modmailChannelId}>` : 'none'}
 				• **greeting message**: ${configured.greetingMessage ? configured.greetingMessage : 'none'}
