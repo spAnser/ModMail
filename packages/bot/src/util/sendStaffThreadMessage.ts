@@ -48,9 +48,7 @@ export async function sendStaffThreadMessage({
 	const options: Omit<MessageEditOptions, 'flags'> = { allowedMentions: { roles: [] } };
 	if (simpleMode) {
 		options.content = `${bold(
-			`${existing ? `${inlineCode(existing.replyId.toString())} ` : ''}${anon ? '(Anonymous) ' : ''}(${
-				staff.guild.name
-			} Team) ${staff.user.tag}:`,
+			`${existing ? `${inlineCode(existing.replyId.toString())} ` : ''}${staff.user.tag}:`,
 		)} ${content}`;
 		if (attachment) {
 			options.files = [attachment];
@@ -89,9 +87,8 @@ export async function sendStaffThreadMessage({
 	// Now that we've sent the message locally, we can purge all identifying information from anon messages
 	if (anon) {
 		if (simpleMode) {
-			userOptions.content = `${bold(
-				`${existing ? `${inlineCode(existing.replyId.toString())} ` : ''}(Anonymous) ${staff.guild.name} Team:`,
-			)} ${content}`;
+			userOptions.content = `${existing ? `${inlineCode(existing.replyId.toString())} ` : ''}
+			${content}`;
 		} else {
 			const [embed] = userOptions.embeds as [EmbedBuilder];
 			const newEmbed = new EmbedBuilder(embed.toJSON());
